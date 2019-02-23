@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 
 import Person from '../components/Person/Person';
 import AddPerson from '../components/AddPerson/AddPerson';
 
 class Persons extends Component {
-    state = {
+    /* state = {
         persons: []
     }
 
@@ -17,28 +18,41 @@ class Persons extends Component {
         this.setState( ( prevState ) => {
             return { persons: prevState.persons.concat(newPerson)}
         } );
-    }
+    } */
 
-    personDeletedHandler = (personId) => {
+    /* personDeletedHandler = (personId) => {
         this.setState( ( prevState ) => {
             return { persons: prevState.persons.filter(person => person.id !== personId)}
         } );
-    }
+    } */
 
     render () {
         return (
             <div>
-                <AddPerson personAdded={this.personAddedHandler} />
-                {this.state.persons.map(person => (
+                <AddPerson personAdded={this.props.addPerson} />
+                {this.props.persona.map(person => (
                     <Person 
                         key={person.id}
                         name={person.name} 
                         age={person.age} 
-                        clicked={() => this.personDeletedHandler(person.id)}/>
+                        clicked={() => this.props.removePerson(person.id)}/>
                 ))}
             </div>
         );
     }
 }
 
-export default Persons;
+const mapStateToProps = (state) => {
+    return {
+        persona: state.persons
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addPerson: () => dispatch({type:"ADDPERSON"}),
+        removePerson: (id) => dispatch({type: "REMOVEPERSON", value: id})
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (Persons);
